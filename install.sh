@@ -52,6 +52,18 @@ setup_haxelib_and_lime() {
   haxelib run hmm setup
   haxelib run hmm install
   # haxelib run lime setup
+
+  # Add pixman path if installed via Homebrew (macOS)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+      export CPATH=$(brew --prefix pixman)/include:$CPATH
+      export LIBRARY_PATH=$(brew --prefix pixman)/lib:$LIBRARY_PATH
+  fi
+
+  # Add similar paths for Linux if needed
+  if [[ "$OSTYPE" == "linux"* ]]; then
+      export CPATH=/usr/include/pixman-1:$CPATH
+      export LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LIBRARY_PATH
+  fi
 }
 
 # Function to install Visual Studio Community (Windows only)
