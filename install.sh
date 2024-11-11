@@ -70,11 +70,34 @@ install_visual_studio_community() {
   fi
 }
 
+# Function to set up HXCPP if it's in development mode
+setup_hxcpp() {
+  HXCPP_PATH=$(haxelib path hxcpp | head -n 1 | awk '{print $1}')
+
+  if [ -d "$HXCPP_PATH/tools/hxcpp" ]; then
+    echo "Detected development version of HXCPP. Running setup..."
+
+    # Step 1: Compile the main command-line tool
+    cd "$HXCPP_PATH/tools/hxcpp" || exit 1
+    haxe compile.hxml
+
+    # Step 2: Build the binaries
+    cd "$HXCPP_PATH/project" || exit 1
+    neko build.n
+
+    # Return to the original directory
+    cd - > /dev/null || exit 1
+  else
+    echo "HXCPP is not in development mode or setup already completed."
+  fi
+}
+
 # Function to build the game if the build flag is true
 build_game() {
   if [ "$BUILD_GAME" = "true" ]; then
     echo "Building game for target platform: $TARGET with defines: $BUILD_DEFINES"
-    haxelib run lime build -project project.hxp "$TARGET" -v -y -release --times "$BUILD_DEFINES"
+    setup_hxcpp
+    haxelib run lime build -project project.hxp "$TARGET" -v -release --times "$BUILD_DEFINES"
   else
     echo "Skipping game build as requested."
   fi
