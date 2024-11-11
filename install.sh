@@ -81,9 +81,17 @@ setup_hxcpp() {
     cd "$HXCPP_PATH/tools/hxcpp" || exit 1
     haxe compile.hxml
 
-    # Step 2: Build the binaries
-    cd "$HXCPP_PATH/project" || exit 1
-    neko build.n
+    # Step 2: Check if 'build.n' exists before attempting to run it
+    if [ -f "$HXCPP_PATH/project/build.n" ]; then
+      cd "$HXCPP_PATH/project" || exit 1
+      if command -v neko >/dev/null 2>&1; then
+        neko build.n
+      else
+        echo "Warning: 'neko' is not available. Skipping 'neko build.n' for HXCPP setup."
+      fi
+    else
+      echo "Warning: 'build.n' file not found in HXCPP project. Skipping this step."
+    fi
 
     # Return to the original directory
     cd - > /dev/null || exit 1
