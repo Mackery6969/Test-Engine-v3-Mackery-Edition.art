@@ -39,11 +39,15 @@ install_haxe() {
   fi
 }
 
+# Run Haxe installation
+install_haxe
+
+# Move to parent directory to locate hmm.json and other project files
+cd ..
+
 # Function to set up Haxelib and Lime, plus additional Git dependencies
 setup_haxelib_and_lime() {
   haxelib setup "$HOME/haxelib"
-
-  # Installing dependencies individually, with specific git versions where needed
   haxelib install hxp 1.3.0
   haxelib git openfl https://github.com/FunkinCrew/openfl
   haxelib git flixel https://github.com/FunkinCrew/flixel
@@ -52,12 +56,8 @@ setup_haxelib_and_lime() {
   haxelib git haxeui-flixel https://github.com/haxeui/haxeui-flixel
   haxelib git hxjsonast https://github.com/nadako/hxjsonast
   haxelib install hmm
-
-  # Run HMM setup and install dependencies
   haxelib run hmm setup
   haxelib run hmm install
-
-  # Lime setup
   haxelib install lime
   haxelib run lime setup
 }
@@ -82,15 +82,13 @@ install_visual_studio_community() {
 build_game() {
   if [ "$BUILD_GAME" = "true" ]; then
     echo "Building game for target platform: $TARGET with defines: $BUILD_DEFINES"
-    cd ..  # Go to the parent directory for building
     haxelib run lime build -project project.hxp "$TARGET" -v -release --times "$BUILD_DEFINES"
   else
     echo "Skipping game build as requested."
   fi
 }
 
-# Run installations and build
-install_haxe
+# Run remaining setup and build steps
 setup_haxelib_and_lime
 install_visual_studio_community
 build_game
