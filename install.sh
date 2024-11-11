@@ -74,7 +74,7 @@ install_visual_studio_community() {
 build_game() {
   if [ "$BUILD_GAME" = "true" ]; then
     echo "Building game for target platform: $TARGET with defines: $BUILD_DEFINES"
-    haxelib run lime build -project project.hxp "$TARGET" -v -release --times "$BUILD_DEFINES"
+    haxelib run lime build -project project.hxp "$TARGET" -v -y -release --times "$BUILD_DEFINES"
   else
     echo "Skipping game build as requested."
   fi
