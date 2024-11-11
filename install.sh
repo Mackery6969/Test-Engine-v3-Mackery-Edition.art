@@ -1,14 +1,21 @@
 #!/bin/bash
 
-# Check if running in GitHub Actions
-IS_GITHUB_ACTION="${4:-false}"
-
-cd "$(dirname "$0")"
-INSTALL_DIR="./install"
-
+# Parameters
 TARGET="${1:-linux}"                  # Default to Linux if not provided
 BUILD_DEFINES="${2:-"-DGITHUB_BUILD"}" # Default build defines
 BUILD_GAME="${3:-false}"               # Default to not building the game
+IS_GITHUB_ACTION="${4:-false}"         # Default to false if not in GitHub Actions
+
+# Echo received parameters for debugging
+echo "Received parameters:"
+echo "TARGET: $TARGET"
+echo "BUILD_DEFINES: $BUILD_DEFINES"
+echo "BUILD_GAME: $BUILD_GAME"
+echo "IS_GITHUB_ACTION: $IS_GITHUB_ACTION"
+
+# Set install directory and navigate to script directory
+cd "$(dirname "$0")"
+INSTALL_DIR="./install"
 
 # Function to install Haxe on different platforms (only runs if not in GitHub Actions)
 install_haxe() {
@@ -35,8 +42,8 @@ install_haxe() {
 # Function to set up Haxelib and Lime
 setup_haxelib_and_lime() {
   haxelib setup "$HOME/haxelib"
-  haxelib install hxp 1.3.0 # idk why this line is ignored in the hmm.json lol
-  haxelib install git openfl https://github.com/FunkinCrew/openfl # idk why this either lol
+  haxelib install hxp 1.3.0
+  haxelib install git openfl https://github.com/FunkinCrew/openfl
   haxelib install hmm
   haxelib run hmm setup
   haxelib run hmm install
@@ -44,7 +51,7 @@ setup_haxelib_and_lime() {
   haxelib run lime setup
 }
 
-# Function to install Visual Studio Community with required components (Windows only)
+# Function to install Visual Studio Community (Windows only)
 install_visual_studio_community() {
   if [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* || "$OSTYPE" == "win32"* ]]; then
     DOWNLOAD_PATH="./vs_community.exe"
@@ -62,7 +69,7 @@ install_visual_studio_community() {
 
 # Function to build the game if the build flag is true
 build_game() {
-  if [ "$BUILD_GAME" == "true" ]; then
+  if [ "$BUILD_GAME" = "true" ]; then
     echo "Building game for target platform: $TARGET with defines: $BUILD_DEFINES"
     cd ..  # Go to the parent directory for building
     haxelib run lime build -project project.hxp "$TARGET" -v -release --times "$BUILD_DEFINES"
@@ -71,9 +78,10 @@ build_game() {
   fi
 }
 
+# Run installations and build
 install_haxe
 setup_haxelib_and_lime
 install_visual_studio_community
-build_game  # Ensure this call actually runs the build based on the flag
+build_game
 
 echo "Setup and build process complete."
