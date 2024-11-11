@@ -35,6 +35,7 @@ install_haxe() {
 # Function to set up Haxelib and Lime
 setup_haxelib_and_lime() {
   haxelib setup "$HOME/haxelib"
+  haxelib install hxp # idk why this line is ignored in the hmm.json lol
   haxelib install hmm
   haxelib run hmm setup
   haxelib run hmm install
