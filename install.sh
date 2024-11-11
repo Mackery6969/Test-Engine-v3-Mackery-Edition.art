@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Check if running in GitHub Actions
-IS_GITHUB_ACTION=${GITHUB_ACTIONS:-false}
+IS_GITHUB_ACTION="${4:-false}"
 
 cd "$(dirname "$0")"
 INSTALL_DIR="./install"
 
-TARGET="${1:-linux}"
-BUILD_DEFINES="${2:-"-DGITHUB_BUILD"}"
-BUILD_GAME="${3:-false}"
+TARGET="${1:-linux}"                  # Default to Linux if not provided
+BUILD_DEFINES="${2:-"-DGITHUB_BUILD"}" # Default build defines
+BUILD_GAME="${3:-false}"               # Default to not building the game
 
 # Function to install Haxe on different platforms (only runs if not in GitHub Actions)
 install_haxe() {
@@ -60,7 +60,7 @@ install_visual_studio_community() {
 
 # Function to build the game if the build flag is true
 build_game() {
-  if [ "$BUILD_GAME" = true ]; then
+  if [ "$BUILD_GAME" == "true" ]; then
     echo "Building game for target platform: $TARGET with defines: $BUILD_DEFINES"
     cd ..  # Go to the parent directory for building
     haxelib run lime build -project project.hxp "$TARGET" -v -release --times "$BUILD_DEFINES"
@@ -72,6 +72,6 @@ build_game() {
 install_haxe
 setup_haxelib_and_lime
 install_visual_studio_community
-build_game
+build_game  # Ensure this call actually runs the build based on the flag
 
 echo "Setup and build process complete."
