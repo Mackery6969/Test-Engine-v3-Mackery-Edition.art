@@ -44,6 +44,7 @@ setup_haxelib_and_lime() {
   haxelib setup "$HOME/haxelib"
   haxelib install hxp 1.3.0
   haxelib git openfl https://github.com/FunkinCrew/openfl
+  haxelib git flixel https://github.com/FunkinCrew/flixel
   haxelib install hmm
   haxelib run hmm setup
   haxelib run hmm install
