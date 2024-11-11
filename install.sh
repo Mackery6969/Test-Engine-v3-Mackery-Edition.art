@@ -39,15 +39,25 @@ install_haxe() {
   fi
 }
 
-# Function to set up Haxelib and Lime
+# Function to set up Haxelib and Lime, plus additional Git dependencies
 setup_haxelib_and_lime() {
   haxelib setup "$HOME/haxelib"
+
+  # Installing dependencies individually, with specific git versions where needed
   haxelib install hxp 1.3.0
   haxelib git openfl https://github.com/FunkinCrew/openfl
   haxelib git flixel https://github.com/FunkinCrew/flixel
+  haxelib git flixel-addons https://github.com/FunkinCrew/flixel-addons
+  haxelib git haxeui-core https://github.com/haxeui/haxeui-core
+  haxelib git haxeui-flixel https://github.com/haxeui/haxeui-flixel
+  haxelib git hxjsonast https://github.com/nadako/hxjsonast
   haxelib install hmm
+
+  # Run HMM setup and install dependencies
   haxelib run hmm setup
   haxelib run hmm install
+
+  # Lime setup
   haxelib install lime
   haxelib run lime setup
 }
